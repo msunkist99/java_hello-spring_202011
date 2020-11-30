@@ -1,22 +1,43 @@
 package org.launchcode.hellospring.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Controller                 //tells SpringBoot that this is a Controller class
-@RequestMapping("hello")    //all requests to methods in this controller start with /hello
-public class HelloController {
+import java.util.ArrayList;
+import java.util.List;
 
-    // Handles request for /hello?name=LaunchCode -- query string
-    @RequestMapping(value="", method = {RequestMethod.GET, RequestMethod.POST})
-    @ResponseBody
-    public String helloWithQueryString(@RequestParam String name){
-        return "Hello, " + name + "!";
+@Controller                 //tells SpringBoot that this is a Controller class
+public class HelloController {
+    //Responds to /hello?name=LaunchCode
+    @RequestMapping(value="hello", method = {RequestMethod.GET, RequestMethod.POST})
+    public String helloQueryString(@RequestParam String name, Model model) {
+        model.addAttribute("greeting", "Hello query string, " + name + "!");
+        return "hello";
     }
 
-    // handles request of form /hello/form
-    @GetMapping("form") //accepts GET requests
+    //Responds to /hello/LaunchCode
+    @GetMapping("hello/{name}")
+    public String helloPathVariable(@PathVariable String name, Model model){
+        model.addAttribute("greeting", "Hello path variable, " + name + "!");
+        return "hello";
+    }
+
+    @GetMapping("form")
     public String helloForm(){
         return "helloForm";
+    }
+
+    //Responds to /hello-names
+    @GetMapping("hello-names")
+    public String helloNames(Model model){
+        List<String> names = new ArrayList<>();
+        names.add("LaunchCode");
+        names.add("Java");
+        names.add("JavaScript");
+
+        model.addAttribute("names", names);
+
+        return "helloList";
     }
 }
